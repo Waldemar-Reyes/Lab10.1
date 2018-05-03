@@ -3,7 +3,7 @@ package treeClasses;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import treeInterfaces.Position;
+import positionalStructures.Position;
 import treeInterfaces.Tree;
 
 public abstract class AbstractTree<E> implements Tree<E> {

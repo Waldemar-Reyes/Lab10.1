@@ -1,13 +1,13 @@
 package labUtils;
 
+import positionalStructures.Position;
 import treeClasses.LinkedBinaryTree;
 import treeClasses.LinkedTree;
-import treeInterfaces.Position;
 import treeInterfaces.Tree;
 
 public class Utils {
 	public static <E> void displayTree(String msg, Tree<E> t) { 
-		System.out.println("\n" + msg); 
+		System.out.println("\n\n" + msg); 
 		t.display(); 
 	}
 
@@ -19,49 +19,42 @@ public class Utils {
 	}
 	
 	public static LinkedTree<Integer> buildExampleTreeAsLinkedTree() { 
-		LinkedTree<Integer> t = new LinkedTree<>();
-		//root
-		t.addRoot(4);
-		//2nd layer
-		Position<Integer> lC = t.addChild(t.root(), 9);
-		Position<Integer> rC = t.addChild(t.root(), 20);
-		//3rd layer
-		t.addChild(lC, 7);
-		t.addChild(lC, 10);
-		Position<Integer> e15 = t.addChild(rC, 15);
-		Position<Integer> e21 = t.addChild(rC, 21);
-		//4th layer
-		t.addChild(e15, 12);
-		Position<Integer> e17 = t.addChild(e15, 17);
-		Position<Integer> e40 = t.addChild(e21, 40);
-		//5th layer
-		t.addChild(e17, 19);
-		t.addChild(e40, 30);
-		t.addChild(e40, 45);
-		
+		LinkedTree<Integer> t = new LinkedTree<>(); 
+		Position<Integer> p = t.addRoot(4); 
+		p = t.addChild(p, 9); 
+		t.addChild(p, 7); 
+		t.addChild(p, 10); 
+		p = t.root(); 
+		p = t.addChild(p, 20); 
+		Position<Integer> q = t.addChild(p, 15); 
+		t.addChild(q, 12); 
+		q=t.addChild(q, 17); 
+		t.addChild(q, 19);
+		p = t.addChild(p, 21); 
+		p = t.addChild(p, 40); 
+		t.addChild(p, 30); 
+		t.addChild(p, 45); 
+
 		return t; 
 	}
 	
 	public static LinkedBinaryTree<Integer> buildExampleTreeAsLinkedBinaryTree() { 
 		LinkedBinaryTree<Integer> t = new LinkedBinaryTree<>(); 
-		//root
-		t.addRoot(4);
-		//2nd layer
-		Position<Integer> lC = t.addLeft(t.root(), 9);
-		Position<Integer> rC = t.addRight(t.root(), 20);
-		//3rd layer
-		t.addLeft(lC, 7);
-		t.addRight(lC, 10);
-		Position<Integer> e15 = t.addLeft(rC, 15);
-		Position<Integer> e21 = t.addRight(rC, 21);
-		//4th layer
-		t.addLeft(e15, 12);
-		Position<Integer> e17 = t.addRight(e15, 17);
-		Position<Integer> e40 = t.addRight(e21, 40);
-		//5th layer
-		t.addLeft(e17, 19);
-		t.addLeft(e40, 30);
-		t.addRight(e40, 45);
+		
+		Position<Integer> p = t.addRoot(4); 
+		p = t.addLeft(p, 9); 
+		t.addLeft(p, 7); 
+		t.addRight(p, 10); 
+		p = t.root(); 
+		p = t.addRight(p, 20); 
+		Position<Integer> q = t.addLeft(p, 15); 
+		t.addLeft(q, 12);
+		q = t.addRight(q, 17); 
+		t.addLeft(q, 19); 
+		p = t.addRight(p, 21); 
+		p = t.addRight(p, 40); 
+		t.addLeft(p, 30); 
+		t.addRight(p, 45); 
 		
 		return t; 
 	}

@@ -1,9 +1,6 @@
 package treeClasses;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import treeInterfaces.Position;
+import positionalStructures.Position;
 
 public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
     // class Node<E> is included at the end of this class
@@ -58,18 +55,8 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	
 	////////////////////////////////////////////////////////////////////////////////
 	// OTHER methods as in textbook: addRoot, addLeft, addRight, attach, and remove
-	// SEE Page 324 in textbook. 
 	////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Creates a root for an empty tree, storing the specified element. The tree must
-	 * be empty for this operation to be valid. 
-	 * @param e reference to the element to be added
-	 * @return position where the element is placed, which also becomes the root 
-	 * of the tree. 
-	 * @throws IllegalStateException throws this exception if the tree is not empty. 
-	 * Such operation is not valid on a non empty tree.
-	 */
 	public Position<E> addRoot(E e) throws IllegalStateException { 
 		if (!this.isEmpty()) 
 			throw new IllegalStateException("Non-empty tree: Can not add a root to a non-empty tree."); 
@@ -78,16 +65,6 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 		return root; 
 	}
 	
-	/**
-	 * Adds a new element as the element of the new position to be added as the left 
-	 * child of another given position in the tree. 
-	 * @param p The position whose left child will be the new position containing the 
-	 * specified element. 
-	 * @param e The new element to be placed in that new position. 
-	 * @return The new position that is created. 
-	 * @throws IllegalArgumentException If p is not valid pas per the validate method, 
-	 * of if p already has a left child in the tree. 
-	 */
 	public Position<E> addLeft(Position<E> p, E e) throws IllegalArgumentException { 
 		Node<E> np = validate(p); 
 		if (np.getLeft() != null) 
@@ -98,13 +75,6 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 		return newNode;
 	}
 	
-	/**
-	 * Same as the above, but to add a right child of p, which shall containg element e. 
-	 * @param p
-	 * @param e
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
 	public Position<E> addRight(Position<E> p, E e) throws IllegalArgumentException { 
 		Node<E> np = validate(p); 
 		if (np.getRight() != null) 
@@ -115,19 +85,6 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 		return newNode;
 	}
 	
-	/**
-	 * Attaches the internal structure of two specified trees as the left and right 
-	 * subtrees of a given external node in this binary tree. The two subtrees to be
-	 * added are supposed to be independent from the tree where they are to be inserted. 
-	 * At the end, both trees to be added will be altered so as to become empty trees.
-	 * Note that, if successful, the size of this tree should be incremented by adding
-	 * the sizes of the original trees that are attached. 
-	 * @param p The external node to which the specified subtrees will be attached. 
-	 * @param t1 The binary tree to be inserted as the left subtree of p. 
-	 * @param t2 The binary tree to be inserted as the right subtree of p.
-	 * @throws IllegalArgumentException if p is not a valid position or if p is not
-	 * an external method. 
-	 */
 	public void Attach(Position<E> p, LinkedBinaryTree<E> t1, LinkedBinaryTree<E> t2) 
 							throws IllegalArgumentException
 	{ 
@@ -153,48 +110,29 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 		}
 	}
 	
-	/**
-	 * Removes the node at a given position. Replaces it with its current child
-	 * (if any). 
-	 * @param p The position to be removed (or corresponding to the node to be 
-	 * removed. 
-	 * @return The element at the removed position. 
-	 * @throws IllegalArgumentException if p is not a valid position or if p has
-	 * two children. This remove is not valid for nodes having two children. 
-	 */
 	public E remove(Position<E> p) throws IllegalArgumentException { 
 		Node<E> ntd = validate(p); 
 		if (numChildren(ntd) == 2)
 			throw new IllegalArgumentException("Position to delete has two children.");
-		
-		// if execution reaches this point, then p is a valid position for this 
-		// remove operation. 
-		E etr = ntd.getElement();   // element to return - current value of p
-		
-		// Assign to variable child the reference to the only child of p, if any; 
-		// otherwise, make it null. 
+		E etr = ntd.getElement(); 
 		Node<E> child = (ntd.getLeft() == null ? ntd.getRight() : ntd.getLeft()); 
-		Node<E> parent = ntd.getParent();   // parent of position to remove.
-		if (parent == null)   // if the p is the root, then its child becomes the new root.
+		Node<E> parent = ntd.getParent(); 
+		if (parent == null) 
 			root = child; 
-		else if (parent.getLeft() == ntd)   // p is the left child of its parent
-			parent.setLeft(child);        // then child becomes left child of parent of p
+		else if (parent.getLeft() == ntd)
+			parent.setLeft(child); 
 		else 
-			parent.setRight(child);       // ow, child becomes right child of parent of p
+			parent.setRight(child);
 		if (child != null)
-			child.setParent(parent);      // if child exists, set its parent to parent of p
+			child.setParent(parent);
 		size--; 
 		
 		// discard deleted node
-		ntd.discard();          // or clean...
+		ntd.discard();
 		
 		return etr; 
 	}
 
-	/**
-	 * SEE ALSO METHOD set in textbook. Work an implementation on your own, but not required
-	 * for this lab. 
-	 */
 	
 	////////////////////////////////////////////////////////
 	// Inner class Node<E> and method to create new node  //
@@ -258,27 +196,5 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 	 */
 	protected Node<E> createNode(E e, Node<E> p, Node<E> l, Node<E> r) { 
 		return new Node<E>(e, p, l, r); 
-	}
-	
-	public LinkedBinaryTree<E> clone() throws CloneNotSupportedException { 
-		LinkedBinaryTree<E> lbt = new LinkedBinaryTree<>(); 
-		if (!isEmpty()) {
-			lbt.addRoot(root().getElement()); 
-			cloneSubtree(root(), lbt, lbt.root()); 
-		}
-		return lbt; 
-	}
-	
-	private void cloneSubtree(Position<E> thisPos, LinkedBinaryTree<E> other, Position<E> nextPos) {
-		Position<E> otherPos;
-		for (Position<E> currentPos : children(thisPos)) { 
-			if ((this.right(this.parent(currentPos)) == currentPos)){  //same logic behind the recDisplay method
-				otherPos = other.addRight(nextPos, currentPos.getElement());		
-			}
-			else {
-				otherPos = other.addLeft(nextPos, currentPos.getElement());	
-			}
-			cloneSubtree(currentPos, other, otherPos); 
-		}
 	}
 }

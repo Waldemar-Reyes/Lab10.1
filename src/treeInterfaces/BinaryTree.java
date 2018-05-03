@@ -1,5 +1,7 @@
 package treeInterfaces;
 
+import positionalStructures.Position;
+
 /**
  * BinaryTree ADT - see textbook for explanation of each operation....
  * 

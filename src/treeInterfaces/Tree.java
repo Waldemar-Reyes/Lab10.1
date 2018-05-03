@@ -2,6 +2,8 @@ package treeInterfaces;
 
 import java.util.Iterator;
 
+import positionalStructures.Position;
+
 /**
  * Tree ADT - see textbook....
  * 

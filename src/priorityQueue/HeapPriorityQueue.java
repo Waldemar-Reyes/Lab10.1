@@ -6,7 +6,9 @@ import heap.Heap;
 import priorityQueueInterfaces.Entry;
 
 /**
- * 
+ * Implementation of a priority queue that uses a previous implementation of
+ * the heap ADT as an instance field. The elements in the queue are stored
+ * in the internal heap. 
  * @author pedroirivera-vega
  *
  * @param <K>
@@ -14,26 +16,42 @@ import priorityQueueInterfaces.Entry;
  */
 
 public class HeapPriorityQueue<K, V> extends AbstractPriorityQueue<K, V> {
+	
+	// The elements of the priority queue will be stored in a heap. 
+	// Since a Heap is a particular case of a binary tree, we are going
+	// to be able to apply operations of the binary tree; in particular
+	// the display() method to visualize the priority queue content. 
 	private Heap<Entry<K, V>> heap; 
 
+	/**
+	 * Creates a new HeapPriorityQueue using the given comparator. 
+	 * @param cmp
+	 */
 	public HeapPriorityQueue(Comparator<K> cmp) {
-		heap = new Heap<Entry<K, V>>( new EntryComparator<K, V>(cmp)); 		
+		super(cmp); 
+		heap = new Heap<Entry<K, V>>(super.entryCmp); 		
+	}
+	
+	/**
+	 * Creates a new HeapPriorityQueue using the default comparator. 
+	 */
+	public HeapPriorityQueue() { 
+		super(); 
+		heap = new Heap<Entry<K, V>>(super.entryCmp); 		
 	}
 	
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
 		return heap.size();
 	}
 
 	@Override
 	public Entry<K, V> min() {
-		return heap.getMin();
+		return heap.min();
 	}
 
 	@Override
 	public Entry<K, V> removeMin() {
-		// TODO Auto-generated method stub
 		return heap.removeMin();
 	}
 
@@ -52,15 +70,4 @@ public class HeapPriorityQueue<K, V> extends AbstractPriorityQueue<K, V> {
 		heap.display(); 
 	}
 	
-	private static class EntryComparator<K, V> implements Comparator<Entry<K, V>> {
-		private Comparator<K> cmp; 
-		public EntryComparator(Comparator<K> cmp) { 
-			this.cmp = cmp; 
-		}
-		
-		public int compare(Entry<K, V> e1, Entry<K, V> e2) {
-			return cmp.compare(e1.getKey(), e2.getKey());
-		} 
-		
-	}
 }

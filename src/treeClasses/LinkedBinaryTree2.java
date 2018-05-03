@@ -1,28 +1,54 @@
 package treeClasses;
 
-import treeInterfaces.Position;
+import positionalStructures.Position;
 
-public class LinkedBinaryTree2<E extends Comparable<E>> extends LinkedBinaryTree<E> {
+public class LinkedBinaryTree2<E extends Comparable<E>> extends AbstractBinaryTree<E> {
+
+	private LinkedBinaryTree<E> t = new LinkedBinaryTree<>(); 
 	
 	public void insert(E e) { 
 		if (isEmpty())
-			addRoot(e); 
+			t.addRoot(e); 
 		else
-			recInsert(root(), e); 
+			recInsert(t.root(), e); 
 	}
 
 	private void recInsert(Position<E> r, E e) {
 		int c = e.compareTo(r.getElement()); 
 		if (c < 0) 
-			if (!hasLeft(r))
-				addLeft(r, e); 
+			if (!t.hasLeft(r))
+				t.addLeft(r, e); 
 			else 
-				recInsert(left(r), e); 
+				recInsert(t.left(r), e); 
 		else 
-			if (!hasRight(r))
-				addRight(r, e); 
+			if (!t.hasRight(r))
+				t.addRight(r, e); 
 			else 
-				recInsert(right(r), e); 		
+				recInsert(t.right(r), e); 		
 	}
 
+	@Override
+	public Position<E> left(Position<E> p) throws IllegalArgumentException {
+		return t.left(p);
+	}
+
+	@Override
+	public Position<E> right(Position<E> p) throws IllegalArgumentException {
+		return t.right(p);
+	}
+
+	@Override
+	public Position<E> root() {
+		return t.root();
+	}
+
+	@Override
+	public Position<E> parent(Position<E> p) throws IllegalArgumentException {
+		return t.parent(p);
+	}
+
+	@Override
+	public int size() {
+		return t.size();
+	}
 }

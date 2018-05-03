@@ -1,9 +1,9 @@
 package treeClasses;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
+import positionalStructures.Position;
 import treeInterfaces.BinaryTree;
-import treeInterfaces.Position;
 
 /**
  * Partial implementation of the BinaryTree ADT.
@@ -53,39 +53,6 @@ public abstract class AbstractBinaryTree<E> extends AbstractTree<E> implements
 		return this.left(parent);
 	}
 	
-
-	
-	// The following part has to do with Exercise 3. 
-	@Override
-	protected void recDisplay(Position<E> r, 
-			int[] control, int level) 
-	{
-		printPrefix(level, control);
-		System.out.println();
-		printPrefix(level, control);
-		Position<E> parent = parent(r);
-		if (parent == null) {
-			System.out.println("__ROOT("+r.getElement()+")");
-		}
-		else	 {
-			if (left(parent) == r) {
-				System.out.println("__L("+r.getElement()+")");
-			}
-			if (right(parent) == r) {
-				System.out.println("__R("+r.getElement()+")");
-			}
-		}
-		control[level]--;
-		int nc = this.numChildren(r);
-		control[level+1] = nc;
-		for (Position<E>  p : this.children(r)) {
-			recDisplay(p, control, level+1);
-		}
-	}
-	
-
-
-	// The following part has to do with Exercise 5.
 	/**/
 	// internal method to construct the Iterable<Position<E>> object. 
 	// based on inorder traversal. 
@@ -97,6 +64,30 @@ public abstract class AbstractBinaryTree<E> extends AbstractTree<E> implements
 			fillIterable(right(r), pList); 
 	}
     /**/
+
+	
+	protected void recDisplay(Position<E> r, 
+			int[] control, int level) 
+	{
+		printPrefix(level, control); 
+		System.out.println(); 
+		printPrefix(level, control); 
+		Position<E> parent = parent(r); 
+		if (parent != null) 
+			if (left(parent) == r)
+				System.out.println("__L("+r.getElement()+")");
+			else 
+				System.out.println("__R("+r.getElement()+")");
+		else 
+			System.out.println("__ROOT("+r.getElement()+")");
+		control[level]--; 
+		int nc = this.numChildren(r); 
+		control[level+1] = nc; 
+		for (Position<E>  p : this.children(r)) {
+			recDisplay(p, control, level+1);  
+		}
+	}
+
 
 
 }

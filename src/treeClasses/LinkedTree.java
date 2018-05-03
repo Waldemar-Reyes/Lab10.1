@@ -1,9 +1,8 @@
 package treeClasses;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import treeInterfaces.Position;
+import positionalStructures.Position;
 
 /**
  * 
@@ -120,23 +119,36 @@ public class LinkedTree<E> extends AbstractTree<E> implements Cloneable {
 			}	
 		}
 		
+		/*
+		// need to remove ntd from the list of children of its parent
+		// Since we are using an ArrayList to keep the children of a 
+		// position, and we don't know the index of the location in the
+		// array of a given position, then we need to do sequential
+		// search for this. PositionalList would be a better choice
+		// instead of the ArrayList... THINK.
+		boolean childRemoved = false; 
+		for (int i=0; !childRemoved && i<parent.children.size(); i++)
+			if (parent.children.get(i) == ntd) { 
+				parent.children.remove(i); 
+				childRemoved = true; 
+			}
+		if (!childRemoved) 
+			throw new RuntimeException("Child was not found, as should."); 
 		
-		parent.getChildren().remove(ntd);
+		*/
 		
-		// discard the removed node
 		ntd.discard(); 
-		
-		size--;    // adjust size
-		return etr;   // return removed value
+		size--; 
+		return etr; 
 	}
 	
 	// Creating a CLONE
 	public LinkedTree<E> clone() throws CloneNotSupportedException { 
 		LinkedTree<E> other = new LinkedTree<>(); 
-		if (!isEmpty()) {
+		if (!isEmpty())
 			other.addRoot(root().getElement()); 
-		    cloneSubtree(root(), other, other.root()); 
-		}
+		cloneSubtree(root(), other, other.root()); 
+		
 		return other; 
 	}
 	

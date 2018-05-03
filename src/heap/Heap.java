@@ -1,147 +1,79 @@
 package heap;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 
-import treeClasses.AbstractBinaryTree;
-import treeClasses.LinkedBinaryTree;
-import treeInterfaces.Position;
+import positionalStructures.Position;
 
 /**
  * Heap data structure implemented as a subclass of AbstractBinaryTree
- * and using an ArrayList<Position<E>> to store its elements or positions. 
+ * and using an ArrayList<Position<E>> to store its elements or positions.
+ * Since the tree is a complete binary tree; if it has n nodes, then those
+ * nodes are stored as the first n elements in the internal ArrayList. 
+ * 
+ * root is located at position 0. 
+ * If a node v is located at location i, if it has a left child, then
+ * that child shall be stored at location 2*i+1. It's right child, if
+ * any, will be stored at location 2*i+2 in the ArrayList. If node v
+ * is not the root, and if it is stored at location i in the internal
+ * ArrayList, then its parent shall be located at location (i-1)/2
+ * in the internal ArrayList. 
  * 
  * @author pedroirivera-vega
  *
- * @param <E>
+ * @param <E> The generic type of the elements. 
  */
-public class Heap<E> extends LinkedBinaryTree<E> {
+public class Heap<E> extends CompleteBinaryTree<E> {
 
-	private ArrayList<HeapPosition<E>> list; 
-	private Comparator<E> cmp; 
+	private Comparator<E> cmp;        // heap insertion is based on this comparator
 	
 	public Heap(Comparator<E> cmp) { 
 		this.cmp = cmp; 
-		list = new ArrayList<>(); 
+	}
+		
+
+	
+	/**
+	 * Method to add a new element to the heap. 
+	 * Adds a new element to the heap. The heap is assumed to be a min-heap. 
+	 * Always add the new element at the first position available in the tree. 
+	 * Just add to the position list.size() in the array list. After the new 
+	 * element is added, apply upheap to guarantee that the current content
+	 * (which is a heap), plus the new element, continue satisfying the heap
+	 * property. 
+	 * @param element
+	 */
+	public Position<E> add(E element) {
+		CBTPosition<E> p = (CBTPosition<E>) super.add(element);    // append to the list (at super)
+		upHeap(p);      // do up-heap as necessary from that position.
+		return p; 
 	}
 	
-	private HeapPosition<E> validate(Position<E> p) throws IllegalArgumentException { 
-		if (!(p instanceof HeapPosition<?>))
-			throw new IllegalArgumentException("Invalid position - not of type HeapPosition."); 
-		HeapPosition<E> hp = (HeapPosition<E>) p; 
-		if (hp.getIndex() < 0 || hp.getIndex() >= list.size())
-			throw new IllegalArgumentException("Position does not belong to this heap."); 
-		return hp; 	
-	}
-	
-	// The following three methods are used to determine the index of the 
-	// left child, the right child, and the parent of a node whose index is
-	// given (parameter i). Notice that the names of each of these methods
-	// are overloaded....... with corresponding methods having parameter of
-	// type Position<>.
-	private int left(int i) { 
-		return 2*i+1; 
-	}
-	
-	private int right(int i) { 
-		return 2*i+2; 
-	}
-	
-	private int parent(int i) { 
-		return ((i-1)/2);
-	}
-	///////////////////////////////////////////////////////////////////////
-	
-	@Override
-	public Position<E> left(Position<E> p) throws IllegalArgumentException {
-		HeapPosition<E> hp = validate(p); 
-		
-		int leftIndex = left(hp.getIndex()); 
-		
-		if (leftIndex < list.size())
-			return list.get(leftIndex); 
-		
-		return null;
-	}
-
-	@Override
-	public Position<E> right(Position<E> p) throws IllegalArgumentException {
-		HeapPosition<E> hp = validate(p); 
-		
-		int rightIndex = right(hp.getIndex()); 
-		
-		if (rightIndex < list.size())
-			return list.get(rightIndex); 
-		
-		return null;
-	}
-
-	@Override
-	public Position<E> root() {
-		if (list.isEmpty()) 
-			return null; 
-		return list.get(0); 
-	}
-
-	@Override
-	public Position<E> parent(Position<E> p) throws IllegalArgumentException {
-		HeapPosition<E> hp = validate(p); 
-		
-		if (hp.getIndex() == 0) 
-			return null;
-		
-		return list.get(parent(hp.getIndex())); 	
-	}
-
-	@Override
-	public int size() {
-		return list.size();
-	}
-
-	@Override
-	public Iterator<E> iterator() {
-		// this is really a bfs iterator
-		ArrayList<E> iterList = new ArrayList<>(); 
-		for (Position<E> p : list) 
-			iterList.add(p.getElement()); 
-		
-		return iterList.iterator();
-
-	}
-
-	@Override
-	public Iterable<Position<E>> positions() {
-		// TODO Auto-generated method stub
-		ArrayList<Position<E>> iterList = new ArrayList<>(); 
-		for (Position<E> p : list) 
-			iterList.add(p); 
-		
-		return iterList;
-	}
-	
-	public void add(E element) {
-		HeapPosition<E> hp = new HeapPosition<>(element, list.size()); 
-		list.add(hp); 
-		upHeap(hp);
-	}
-	
-	public E getMin() { 
+	/**
+	 * Returns minimum element in the heap. That element is at location 0
+	 * in the array or arraylist. 
+	 * @return reference to the minimum element. 
+	 */
+	public E min() { 
 		if (list.isEmpty())
 			return null; 
-		return list.get(0).getElement(); 
+		return list.get(0).getElement();    // min element is at position 0 
 	}
 	
+
+	/** 
+	 * Same effect as min() but it also removes that element from the pq. 
+	 * @return
+	 */
 	public E removeMin() { 
 		if (list.isEmpty())
 			return null; 
 		
-		HeapPosition<E> ptr = list.get(0);
+		CBTPosition<E> ptr = (CBTPosition<E>) list.get(0);
 		
 		if (list.size() > 1) {
 		   list.set(0, list.remove(list.size()-1)); 
-		   list.get(0).setIndex(0);
-		   downHeap(list.get(0)); 
+		   ((CBTPosition<E>) list.get(0)).setIndex(0);
+		   downHeap((CBTPosition<E>) list.get(0)); 
 		}
 		else 
 			list.remove(0);
@@ -149,25 +81,37 @@ public class Heap<E> extends LinkedBinaryTree<E> {
 		return ptr.getElement(); 
 	}
 	
-	
-	private void downHeap(HeapPosition<E> r) { 
+	/**
+	 * Does downheap of r in subtree having root r
+	 * @param r
+	 */
+	private void downHeap(CBTPosition<E> r) { 
 		if (this.hasLeft(r)) { 
-			HeapPosition<E> minChild = (HeapPosition<E>) this.left(r); 
+			CBTPosition<E> minChild = (CBTPosition<E>) this.left(r); 
 			if (this.hasRight(r)) {
-				HeapPosition<E> rChild = (HeapPosition<E>) this.right(r); 
+				CBTPosition<E> rChild = (CBTPosition<E>) this.right(r); 
 				if (cmp.compare(minChild.getElement(), this.right(r).getElement()) > 0)
 					minChild = rChild; 
 			}
-			if (cmp.compare(minChild.getElement(), r.getElement()) < 0) { 
-				swapPositionsInList(r, minChild);   // r is now son of minChild....
-				downHeap(r); 
+			if (cmp.compare(r.getElement(), minChild.getElement()) > 0) { 
+				swapPositionsInList(r, minChild); 
+				downHeap(r);
+
 			}
 		}
 	}
 
-	private void upHeap(HeapPosition<E> p) { 
+	/**
+	 * Moves upward, as needed, in the path from p to root, the element at p
+	 * with the goal of maintaining the heep property after the new element
+	 * is added. Potentially, this goes upward, all the way from p to root, 
+	 * or until the value initially in p reached a level in which the key
+	 * at its parent is less than the key initially at p. 
+	 * @param p
+	 */
+	private void upHeap(CBTPosition<E> p) { 
 		if (!this.isRoot(p)) { 
-			HeapPosition<E> parent = (HeapPosition<E>) this.parent(p); 
+			CBTPosition<E> parent = (CBTPosition<E>) this.parent(p); 
 			if (cmp.compare(p.getElement(), parent.getElement()) < 0) { 
 				swapPositionsInList(p, parent);    // p is now parent of parent....
 				upHeap(p); 
@@ -175,42 +119,21 @@ public class Heap<E> extends LinkedBinaryTree<E> {
 		}
 	}
 	
-	private void swapPositionsInList(HeapPosition<E> r, HeapPosition<E> c) {
+	/** 
+	 * Interchanges two position in the array. 
+	 * 
+	 * @param r one of the position
+	 * @param c the other position
+	 */
+	private void swapPositionsInList(CBTPosition<E> r, CBTPosition<E> c) {
 		int ir = r.getIndex(); 
 		int ic = c.getIndex(); 
-		r.setIndex(ic);
+		r.setIndex(ic);         // since position change location, indexes are changed too
 		c.setIndex(ir);
+		
+		// swap content of location ir and ic in the arraylist
 		list.set(ir, list.set(ic, r));   // swaps elements at positions ir and ic in list
+		   
 	}
 
-	// Private class implementing the type of positions being used in this 
-	// implementation. 
-	private static class HeapPosition<E> implements Position<E> {
-
-		private E element; 
-		private int index;   // its position in the array list 
-		
-		public HeapPosition(E element, int index) { 
-			this.element = element; 
-			this.index = index; 
-		}
-		
-		@Override
-		public E getElement() {
-			return element; 
-		}
-
-		public int getIndex() {
-			return index;
-		}
-
-		public void setIndex(int index) {
-			this.index = index;
-		}
-
-		public void setElement(E element) {
-			this.element = element;
-		} 
-		
-	}
 }
